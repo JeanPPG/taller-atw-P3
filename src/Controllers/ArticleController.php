@@ -106,9 +106,6 @@ class ArticleController {
             if (isset($payload['area'])) {
                 $article->setArea($payload['area']);
             }
-            if (isset($payload['id'])) {
-                $article->setId((int)$payload['id']);
-            }
 
             echo json_encode(['success' => $this->articleRepository->update($article)]);
             return;
