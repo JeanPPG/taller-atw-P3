@@ -7,17 +7,20 @@ namespace App\Controllers;
 use App\Repositories\AuthorRepository;
 use App\Entities\Author;
 
-class AuthorController {
+class AuthorController
+{
     private AuthorRepository $authorRepository;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->authorRepository = new AuthorRepository();
     }
 
-    public function handle(): void{
+    public function handle(): void
+    {
         header('Content-Type: application/json');
         $method = $_SERVER['REQUEST_METHOD'];
-        
+
         if ($method === 'GET') {
 
             if (isset($_GET['id'])) {
@@ -48,14 +51,14 @@ class AuthorController {
             return;
         }
 
-        if($method === 'PUT') {
-            $id = (int)($_GET['id'] ?? 0);
-            $author = $this->authorRepository->findById($id);
-            if (!$author) {
+        if ($method === 'PUT') {
+            if (isset($payload['id'])) {
+
                 http_response_code(404);
                 echo json_encode(['error' => 'Author not found']);
                 return;
             }
+            $author = $this->authorRepository->findById((int)$payload['id']);
             $author->setFirstName($payload['first_name'] ?? $author->getFirstName());
             $author->setLastName($payload['last_name'] ?? $author->getLastName());
             $author->setUsername($payload['username'] ?? $author->getUsername());
@@ -66,11 +69,11 @@ class AuthorController {
             return;
         }
 
-        if($method === 'DELETE') {
+        if ($method === 'DELETE') {
             $payload = json_decode(file_get_contents('php://input'), true);
             $id = (int)($payload['id'] ?? 0);
             $existing = $this->authorRepository->delete($id);
-            echo json_encode(['success' => $existing ]);
+            echo json_encode(['success' => $existing]);
             return;
         }
 
@@ -78,7 +81,8 @@ class AuthorController {
         echo json_encode(['error' => 'Method not allowed']);
     }
 
-    private function authorToArray(Author $author): array {
+    private function authorToArray(Author $author): array
+    {
         return [
             'id'         => $author->getId(),
             'first_name' => $author->getFirstName(),
