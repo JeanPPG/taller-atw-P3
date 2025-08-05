@@ -59,12 +59,33 @@ class AuthorController
                 return;
             }
             $author = $this->authorRepository->findById((int)$payload['id']);
-            $author->setFirstName($payload['first_name'] ?? $author->getFirstName());
-            $author->setLastName($payload['last_name'] ?? $author->getLastName());
-            $author->setUsername($payload['username'] ?? $author->getUsername());
-            $author->setEmail($payload['email'] ?? $author->getEmail());
-            $author->setOrcid($payload['orcid'] ?? $author->getOrcid());
-            $author->setAfiliation($payload['afiliation'] ?? $author->getAfiliation());
+            if (!$author) {
+                http_response_code(404);
+                echo json_encode(['error' => 'Author not found']);
+                return;
+            }
+            if(isset($payload['first_name'])) {
+                $author->setFirstName($payload['first_name']);
+            }
+            if(isset($payload['last_name'])) {
+                $author->setLastName($payload['last_name']);
+            }
+            if(isset($payload['username'])) {
+                $author->setUsername($payload['username']);
+            }
+            if(isset($payload['email'])) {
+                $author->setEmail($payload['email']);
+            }
+            if(isset($payload['password'])) {
+                $author->setPassword(password_hash($payload['password'], PASSWORD_BCRYPT));
+            }
+            if(isset($payload['orcid'])) {
+                $author->setOrcid($payload['orcid']);
+            }
+            if(isset($payload['afiliation'])) {
+                $author->setAfiliation($payload['afiliation']);
+            }
+            
             echo json_encode(['success' => $this->authorRepository->update($author)]);
             return;
         }

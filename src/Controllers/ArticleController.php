@@ -78,16 +78,37 @@ class ArticleController {
                 return;
             }
 
-            $article->setTitle($payload['title'] ?? $article->getTitle());
-            $article->setDescription($payload['description'] ?? $article->getDescription());
-            $article->setPublicationDate(new \DateTime($payload['publication_date'] ?? $article->getPublicationDate()->format('Y-m-d')));
+            if (isset($payload['title'])) {
+                $article->setTitle($payload['title']);
+            }
+            if (isset($payload['description'])) {
+                $article->setDescription($payload['description']);
+            }
+            if (isset($payload['publication_date'])) {
+                $article->setPublicationDate(new \DateTime($payload['publication_date']));
+            }
             $article->setAuthor($author);
-            $article->setDoi($payload['doi'] ?? $article->getDoi());
-            $article->setAbstract($payload['abstract'] ?? $article->getAbstract());
-            $article->setKeywords($payload['keywords'] ?? $article->getKeywords());
-            $article->setIndexation($payload['indexation'] ?? $article->getIndexation());
-            $article->setMagazine($payload['magazine'] ?? $article->getMagazine());
-            $article->setArea($payload['area'] ?? $article->getArea());
+            if (isset($payload['doi'])) {
+                $article->setDoi($payload['doi']);
+            }
+            if (isset($payload['abstract'])) {
+                $article->setAbstract($payload['abstract']);
+            }
+            if (isset($payload['keywords'])) {
+                $article->setKeywords($payload['keywords']);
+            }
+            if (isset($payload['indexation'])) {
+                $article->setIndexation($payload['indexation']);
+            }
+            if (isset($payload['magazine'])) {
+                $article->setMagazine($payload['magazine']);
+            }
+            if (isset($payload['area'])) {
+                $article->setArea($payload['area']);
+            }
+            if (isset($payload['id'])) {
+                $article->setId((int)$payload['id']);
+            }
 
             echo json_encode(['success' => $this->articleRepository->update($article)]);
             return;
