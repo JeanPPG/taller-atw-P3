@@ -73,6 +73,9 @@ class AuthorController {
             echo json_encode(['success' => $existing ]);
             return;
         }
+
+        http_response_code(405);
+        echo json_encode(['error' => 'Method not allowed']);
     }
 
     private function authorToArray(Author $author): array {

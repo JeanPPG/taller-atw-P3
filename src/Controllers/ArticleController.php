@@ -93,6 +93,16 @@ class ArticleController {
             return;
         }
         
+        if($method === 'DELETE') {
+            $payload = json_decode(file_get_contents('php://input'), true);
+            $id = (int)($payload['id'] ?? 0);
+            $existing = $this->articleRepository->delete($id);
+            echo json_encode(['success' => $existing]);
+            return;
+        }
+
+        http_response_code(405);
+        echo json_encode(['error' => 'Method not allowed']);
     }
 
 
