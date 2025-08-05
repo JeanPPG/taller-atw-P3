@@ -47,6 +47,32 @@ class AuthorController {
             echo json_encode(['success' => $this->authorRepository->create($author)]);
             return;
         }
+
+        if($method === 'PUT') {
+            $id = (int)($_GET['id'] ?? 0);
+            $author = $this->authorRepository->findById($id);
+            if (!$author) {
+                http_response_code(404);
+                echo json_encode(['error' => 'Author not found']);
+                return;
+            }
+            $author->setFirstName($payload['first_name'] ?? $author->getFirstName());
+            $author->setLastName($payload['last_name'] ?? $author->getLastName());
+            $author->setUsername($payload['username'] ?? $author->getUsername());
+            $author->setEmail($payload['email'] ?? $author->getEmail());
+            $author->setOrcid($payload['orcid'] ?? $author->getOrcid());
+            $author->setAfiliation($payload['afiliation'] ?? $author->getAfiliation());
+            echo json_encode(['success' => $this->authorRepository->update($author)]);
+            return;
+        }
+
+        if($method === 'DELETE') {
+            $payload = json_decode(file_get_contents('php://input'), true);
+            $id = (int)($payload['id'] ?? 0);
+            $existing = $this->authorRepository->delete($id);
+            echo json_encode(['success' => $existing ]);
+            return;
+        }
     }
 
     private function authorToArray(Author $author): array {
